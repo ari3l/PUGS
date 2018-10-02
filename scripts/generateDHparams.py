@@ -1,4 +1,5 @@
 from dh import generate_prime
+import random
 
 
 def generate_factors(prime_num):
@@ -41,8 +42,11 @@ def main():
     prime_number = generate_prime(10) #range between 1 and 1024
 
     cyclic_group = generate_cyclic_group(prime_number)
+
+    alpha = random.choice(cyclic_group)
+
     print "Prime Number Value: " + str(prime_number)
-    for x in cyclic_group: print x
+    print "Generator (alpha) Value: " + str(alpha)
 
 
 if __name__ == '__main__':
