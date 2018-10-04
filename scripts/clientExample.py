@@ -17,7 +17,7 @@ def main():
     username = args.username
     password = args.password
     site = args.site
-    n = 10
+    n = 100
     p, g = generate_parameters(n)
 
     print('P: {0} G: {1}'.format(p, g))
