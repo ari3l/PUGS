@@ -59,6 +59,19 @@ def generate_prime(n):
     return p
 
 
+def generate_parameters(n):
+
+    p = 0
+
+    while True:
+        p = random.randint(0, 2**n)
+        if is_probable_prime(p) and is_probable_prime((p-1)/2):
+            break
+
+    g = random.randint(0, 2**n)**2 % p
+    return (p, g)
+
+
 def main():
     n = 100
     parameters = generate_parameters(n)
