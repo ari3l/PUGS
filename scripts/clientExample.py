@@ -22,7 +22,7 @@ def main():
 
     print('P: {0} G: {1}'.format(p, g))
 
-    rwd = 7
+    rwd = calculate_rwd(password)
 
     print('Randomly generated password: {0}'.format(rwd))
 
