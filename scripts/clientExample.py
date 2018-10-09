@@ -1,9 +1,11 @@
 import hashlib
 import argparse
-from alice import Alice
+#from alice import Alice
 from dh import generate_parameters
 import random
-from bob import Bob
+#from bob import Bob
+
+#TODO: add retry ?
 
 
 def calculate_rwd(pwd):
@@ -18,42 +20,42 @@ def main():
     password = args.password
     site = args.site
     n = 100
+
     p, g = generate_parameters(n)
 
-    print('P: {0} G: {1}'.format(p, g))
+    h = calculate_rwd(str(password) + str(site))
 
-    rwd = calculate_rwd(password+site)
-
-    print('Randomly generated password: {0}'.format(rwd))
+    print('h value: {0}'.format(h))
 
     r = random.randint(2, 2 ** n)
     k = random.randint(2, 2 ** n)
 
-    alpha = pow(g, rwd, p)
+    alpha = pow(g, h, p) #alpha is g^h mod p
     print('Alpha: {0}'.format(alpha))
 
-    alice = Alice(alpha, r, p)
-    a = pow(alice.alpha, r, p)
-    print('\nAlice\'s keys are: G: {0} P: {1} R: {2}'.format(alice.alpha, alice.p, alice.r))
+
+    a = pow(alpha, r, p) #a is alpha^r mod p
     print('\nAlice sends to Bob: ' + str(a))
 
-    bob = Bob(alice.alpha, k, alice.p)
-    b = bob.get_message()
-
-    print('\nBob\'s keys are: G: {0} P: {1} K: {2}'.format(bob.g, bob.p, bob.k))
+    b = pow(a, k, p) #bob has a^k mod p
     print('\nBob sends back to Alice: {0}'.format(b))
 
-    received_message = alice.receive_message(bob)
-    print(received_message)
-    if pow(a, received_message.k, p) == pow(bob.get_message(), alice.r, p):
-        print('\nAlice and Bob both computed: {0}'.format(pow(a, received_message.k, p)))
+    computed_value = b ^ 1/r
+    print('\nComputed value: {0}'.format(computed_value))
+
+    hashed_message = str(computed_value)
+    actually_hashed = hashlib.sha256(hashed_message).hexdigest()
+    print('\nNew hash value: {0}'.format(actually_hashed))
+
+    other_value = pow(r, -1) % (p-1)/2
+    print('\nOther value: {0}'.format(other_value))
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--username', help='username for site')
-    parser.add_argument('--password', help='master password entry')
-    parser.add_argument('--site', help='domain')
+    parser.add_argument('--username', default='username', help='username for site')
+    parser.add_argument('--password', default='password', help='master password entry')
+    parser.add_argument('--site', default='google.com', help='domain')
     return parser.parse_args()
 
 

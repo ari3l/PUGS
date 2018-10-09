@@ -1,20 +1,20 @@
-import hashlib
+import random
 from bob import Bob
 
 
 class Alice:
 
-    def __init__(self, alpha, r, p):
+    def __init__(self, alpha, p):
         self.alpha = alpha
-        self.r = r
+        self.r = random.randint(2, 2 ** 100)
         self.p = p
 
-    def receive_message(self, Bob):
+    def send_message(self, p):
+        a = pow(self.alpha, self.r, self.p)
+        return a, p
 
-        return Bob
-        # s = message ** 1/self.r
-        # hex_string = hex(s).rstrip("L").lstrip("0x") or "0"
-        # return int(hashlib.sha256(hex_string).hexdigest(),16)
+    def receive_message(self, Bob):
+        b = pow(a, self.k, self.p)
 
     def __repr__(self):
         return str(self.__dict__)

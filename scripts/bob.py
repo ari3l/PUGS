@@ -1,12 +1,13 @@
+import random
+
 class Bob:
 
-    def __init__(self, g, k, p):
-        self.g = g
-        self.k = k
+    def __init__(self, a, p):
+        self.a = a
+        self.k = random.randint(2, 2 ** 100)
         self.p = p
 
-    def get_message(self):
-        return pow(self.g, self.k, self.p)
+    def receive_message(self, a, p):
 
     def __repr__(self):
         return str(self.__dict__)
