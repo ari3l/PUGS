@@ -1,17 +1,9 @@
 import hashlib
 import argparse
-#from alice import Alice
-from dh import generate_parameters
-import random
-#from bob import Bob
+from alice import Alice
+from bob import Bob
 
 #TODO: add retry ?
-
-
-def calculate_rwd(pwd):
-    #H(pwd|domain)
-    rwd = int(hashlib.sha256(pwd).hexdigest(), 16)
-    return rwd
 
 
 def main():
@@ -19,36 +11,28 @@ def main():
     username = args.username
     password = args.password
     site = args.site
-    n = 100
 
-    p, g = generate_parameters(n)
+    alice = Alice()
+    alice.setup(password, site)
 
-    h = calculate_rwd(str(password) + str(site))
-
-    print('h value: {0}'.format(h))
-
-    r = random.randint(2, 2 ** n)
-    k = random.randint(2, 2 ** n)
-
-    alpha = pow(g, h, p) #alpha is g^h mod p
-    print('Alpha: {0}'.format(alpha))
-
-
-    a = pow(alpha, r, p) #a is alpha^r mod p
+    a, p = alice.send_message()
     print('\nAlice sends to Bob: ' + str(a))
 
-    b = pow(a, k, p) #bob has a^k mod p
+    bob = Bob()
+    bob.setup(a, p)
+
+    b = bob.compute_value(a)
     print('\nBob sends back to Alice: {0}'.format(b))
 
-    computed_value = b ^ 1/r
+    computed_value = alice.compute_b(b)
     print('\nComputed value: {0}'.format(computed_value))
 
     hashed_message = str(computed_value)
     actually_hashed = hashlib.sha256(hashed_message).hexdigest()
     print('\nNew hash value: {0}'.format(actually_hashed))
 
-    other_value = pow(r, -1) % (p-1)/2
-    print('\nOther value: {0}'.format(other_value))
+    # other_value = pow(r, -1) % (p-1)/2
+    # print('\nOther value: {0}'.format(other_value))
 
 
 def parse_args():
