@@ -11,6 +11,7 @@ def main():
     username = args.username
     password = args.password
     site = args.site
+    category = args.category
 
     alice = Alice()
     alice.setup(password, site)
@@ -40,6 +41,8 @@ def parse_args():
     parser.add_argument('--username', default='username', help='username for site')
     parser.add_argument('--password', default='password', help='master password entry')
     parser.add_argument('--site', default='google.com', help='domain')
+    parser.add_argument('--category', default='simple', help='enter simple or complex based on whether or not there are symbols in the password')
+   
     return parser.parse_args()
 
 
