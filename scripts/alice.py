@@ -24,8 +24,7 @@ class Alice:
         n = 100
         p, g = generate_parameters(n)
         h = self.calculate_hash(password, site)
-        a = pow(g, h, p)
-        alpha = pow(a, self.r, p)
+        alpha = pow(g, h, p)
         return alpha, p
 
     def send_message(self):
