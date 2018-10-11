@@ -22,7 +22,7 @@ def main():
     bob = Bob()
     bob.setup(a, p)
 
-    b = bob.compute_value(a)
+    b = bob.receive_message()
     print('\nBob sends back to Alice: {0}'.format(b))
 
     computed_value = alice.compute_b(b)
