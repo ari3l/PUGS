@@ -38,10 +38,10 @@ def main():
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--username', default='username', help='username for site')
-    parser.add_argument('--password', default='password', help='master password entry')
-    parser.add_argument('--site', default='google.com', help='domain')
-    parser.add_argument('--category', default='simple', help='enter simple or complex based on whether or not there are symbols in the password')
+    parser.add_argument('--username', help='username for site')
+    parser.add_argument('--password', help='master password entry')
+    parser.add_argument('--site', help='domain')
+    parser.add_argument('--category', help= 'enter simple or complex based on whether or not there are symbols in the password')
    
     return parser.parse_args()
 
