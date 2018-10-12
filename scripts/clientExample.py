@@ -14,10 +14,9 @@ def main():
     category = args.category
 
     alice = Alice()
-    alice.setup(password, site)
+    alice.setup(password, site, 100)
 
     a, p = alice.send_message()
-    print('\nAlice sends to Bob: ' + str(a))
 
     bob = Bob()
     bob.setup(a, p)
@@ -25,13 +24,7 @@ def main():
     b = bob.receive_message()
     print('\nBob sends back to Alice: {0}'.format(b))
 
-    computed_value = alice.compute_b(b)
-    print('\nComputed value: {0}'.format(computed_value))
-
-    hashed_message = str(computed_value)
-    actually_hashed = hashlib.sha256(hashed_message).hexdigest()
-    print('\nNew hash value: {0}'.format(actually_hashed))
-
+    alice.compute_rwd(b, category)
     # other_value = pow(r, -1) % (p-1)/2
     # print('\nOther value: {0}'.format(other_value))
 

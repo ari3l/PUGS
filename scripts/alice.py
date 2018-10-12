@@ -2,7 +2,7 @@ import random
 from dh import generate_parameters
 import hashlib
 import os
-
+import string
 
 class Alice:
 
@@ -12,11 +12,7 @@ class Alice:
         self.r = 0
         self.g = 0
 
-    def setup(self, password, site):
-        n = 100
-
-
-        self.r = 43
+    def setup(self, password, site, n):
 
         if os.path.exists("alice.txt"):
             # read the number from the file
@@ -28,6 +24,7 @@ class Alice:
             self.g = int(file_str[2])
             print "Read r " + str(self.r) + " and p" + str(self.p) + "g: " + str(self.g)
         else:
+            self.r = random.randint(2, 2 ** n)
             self.p, self.g = generate_parameters(n)
             f = open("alice.txt", "w")
             f.write(str(self.r) + "," + str(self.p) + "," + str(self.g))
@@ -48,8 +45,35 @@ class Alice:
     def send_message(self):
         return pow(self.alpha, self.r, self.p), self.p
 
-    def compute_b(self, b):
-        return b ^ (1 / self.r)
+    def compute_rwd(self, b, category):
+        message = b ^ (1 / self.r)
+        print('\nValue received from Bob: {0}'.format(message))
+        rwd_str = str(message)
+        rwd = hashlib.sha256(rwd_str).hexdigest()
+        print('\nRWD: {0}'.format(rwd))
+
+        simple_list = list(string.ascii_letters + string.digits)
+        symbols_list = list(string.punctuation) #TODO get proper list of symbols
+        complex_list = list(simple_list + symbols_list)
+        new_rwd = ''
+
+        if category == 'simple':
+            new_rwd = self.map_algorithm(simple_list, rwd)
+        else:
+            new_rwd = self.map_algorithm(complex_list, rwd)
+
+        print('\nNew RWD: {0}'.format(new_rwd))
+
+    def map_algorithm(self, category_list, rwd):
+        new_rwd = '' #new rwd will be of length 16 (max length)
+        n = 4
+        split_rwd = [rwd[i:i+n] for i in range(0, len(rwd), n)]
+
+        for x in split_rwd:
+            index = int(x, 16) % len(category_list) - 1
+            new_rwd += category_list[index]
+
+        return new_rwd
 
     def __repr__(self):
         return str(self.__dict__)
