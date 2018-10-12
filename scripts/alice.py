@@ -53,7 +53,7 @@ class Alice:
         print('\nRWD: {0}'.format(rwd))
 
         simple_list = list(string.ascii_letters + string.digits)
-        symbols_list = list(string.punctuation) #TODO get proper list of symbols
+        symbols_list = ['-', '_', '*', '%', '!', '@', '$', '#', '^', '&']
         complex_list = list(simple_list + symbols_list)
         new_rwd = ''
 
