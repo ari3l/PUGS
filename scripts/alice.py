@@ -19,16 +19,10 @@ class Alice:
             file = open("alice.txt", "r")
             file_str = file.read()
             file_str = file_str.split(",")
-            self.r = int(file_str[0]) #TODO r should NOT be saved
-            self.p = int(file_str[1])
-            self.g = int(file_str[2])
-            print "Read r " + str(self.r) + " and p" + str(self.p) + "g: " + str(self.g)
-        else:
-            self.p, self.g = generate_parameters(n)
-            self.r = random.randint(2, ((p - 1)/2))
-            f = open("alice.txt", "w")
-            f.write(str(self.r) + "," + str(self.p) + "," + str(self.g))
-            f.close()
+            self.p = int(file_str[0])
+            self.g = int(file_str[1])
+
+        self.r = random.randint(2, ((self.p - 1)/2))
         self.alpha = self.generate_alpha(password, site)
 
     def calculate_hash(self, password, site):
@@ -46,7 +40,7 @@ class Alice:
         return pow(self.alpha, self.r, self.p), self.p
 
     def compute_rwd(self, b, category):
-        message = b ** (1 / self.r)
+        message = b ^ (1 / self.r)
         print('\nValue received from Bob: {0}'.format(message))
         rwd_str = str(message)
         rwd = hashlib.sha256(rwd_str).hexdigest()
