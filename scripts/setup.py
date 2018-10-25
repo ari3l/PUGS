@@ -23,3 +23,9 @@ def setup():
     f.write(bob_str)
     f.close()
 
+def main():
+    setup()
+
+if __name__ == '__main__':
+    main()
+

@@ -1,14 +1,11 @@
-import hashlib
+
 import argparse
 from alice import Alice
 from bob import Bob
-import setup
 
-#TODO: add retry ?
 
 
 def main():
-    setup.setup() #not really though, can only be used once
     args = parse_args()
     username = args.username
     password = args.password
@@ -27,7 +24,6 @@ def main():
     print('\nb value (or a^k mod p): {0}'.format(b))
     print('\nalpha raised to k mod p: {0}'.format(pow(alice.alpha, bob.k, p)))
     alice.compute_rwd(b, category)
-
 
 
 def parse_args():

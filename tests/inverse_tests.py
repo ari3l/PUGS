@@ -1,4 +1,4 @@
-from dh import generate_prime
+from scripts.dh import generate_prime
 import random
 
 

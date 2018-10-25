@@ -2,7 +2,7 @@ import random
 import hashlib
 import os
 import string
-from inverse_tests import modinv
+from dh import modinv
 
 
 class Alice:
