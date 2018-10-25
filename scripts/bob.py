@@ -1,7 +1,7 @@
-import random
 import os
 
 BOB_FILE = 'bob.txt'
+
 
 class Bob:
 

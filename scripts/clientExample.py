@@ -2,11 +2,13 @@ import hashlib
 import argparse
 from alice import Alice
 from bob import Bob
+import setup
 
 #TODO: add retry ?
 
 
 def main():
+    setup.setup() #not really though, can only be used once
     args = parse_args()
     username = args.username
     password = args.password
@@ -14,19 +16,18 @@ def main():
     category = args.category
 
     alice = Alice()
-    alice.setup(password, site, 100)
+    alice.setup(password, site)
 
     a, p = alice.send_message()
-
+    print('\na value (or alpha^r mod p): {0}'.format(a))
     bob = Bob()
     bob.setup(a, p)
 
     b = bob.receive_message()
-    print('\nBob sends back to Alice: {0}'.format(b))
-
+    print('\nb value (or a^k mod p): {0}'.format(b))
+    print('\nalpha raised to k mod p: {0}'.format(pow(alice.alpha, bob.k, p)))
     alice.compute_rwd(b, category)
-    # other_value = pow(r, -1) % (p-1)/2
-    # print('\nOther value: {0}'.format(other_value))
+
 
 
 def parse_args():

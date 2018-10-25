@@ -1,8 +1,9 @@
 import random
-from dh import generate_parameters
 import hashlib
 import os
 import string
+from inverse_tests import modinv
+
 
 class Alice:
 
@@ -12,7 +13,7 @@ class Alice:
         self.r = 0
         self.g = 0
 
-    def setup(self, password, site, n):
+    def setup(self, password, site):
 
         if os.path.exists("alice.txt"):
             # read the number from the file
@@ -21,9 +22,12 @@ class Alice:
             file_str = file_str.split(",")
             self.p = int(file_str[0])
             self.g = int(file_str[1])
-
-        self.r = random.randint(2, ((self.p - 1)/2))
+        print('P value is: ' + str(self.p))
+        print('G value is: ' + str(self.g))
+        self.r = random.randint(2, (self.p - 1)/2)
+        print('R value is: ' + str(self.r))
         self.alpha = self.generate_alpha(password, site)
+        print('Alpha is: ' + str(self.alpha))
 
     def calculate_hash(self, password, site):
         # H(pwd|domain)
@@ -33,6 +37,7 @@ class Alice:
 
     def generate_alpha(self, password, site):
         h = self.calculate_hash(password, site)
+        print('H value is: ' + str(h))
         alpha = pow(self.g, h, self.p)
         return alpha
 
@@ -40,8 +45,10 @@ class Alice:
         return pow(self.alpha, self.r, self.p), self.p
 
     def compute_rwd(self, b, category):
-        message = b ^ (1 / self.r)
-        print('\nValue received from Bob: {0}'.format(message))
+        inverse = modinv(self.r, (self.p-1)/2)
+
+        message = pow(b, inverse, self.p)
+        print('\nb^ inverse of r (r^-1 mod p-1/2): {0}'.format(message))
         rwd_str = str(message)
         rwd = hashlib.sha256(rwd_str).hexdigest()
         print('\nRWD: {0}'.format(rwd))

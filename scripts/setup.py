@@ -4,7 +4,8 @@ import random
 ALICE_FILE = 'alice.txt'
 BOB_FILE = 'bob.txt'
 
-if __name__ == '__main__':
+
+def setup():
     p, g = generate_parameters(100)
     k = random.randint(2, ((p - 1)/2))
 
@@ -21,3 +22,4 @@ if __name__ == '__main__':
     f = open(BOB_FILE, "w")
     f.write(bob_str)
     f.close()
+
