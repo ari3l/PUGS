@@ -1,12 +1,13 @@
 from dh import generate_parameters
 import random
+import argparse
 
 ALICE_FILE = 'alice.txt'
 BOB_FILE = 'bob.txt'
 
 
-def setup():
-    p, g = generate_parameters(100)
+def setup(n):
+    p, g = generate_parameters(n) #make command line argument
     k = random.randint(2, ((p - 1)/2))
 
     # Alice stuff
@@ -23,8 +24,19 @@ def setup():
     f.write(bob_str)
     f.close()
 
+
 def main():
-    setup()
+    args = parse_args()
+    n = args.n_value
+    setup(int(n))
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--n-value', default=100, help='n value for generating p and g parameters')
+
+    return parser.parse_args()
+
 
 if __name__ == '__main__':
     main()
