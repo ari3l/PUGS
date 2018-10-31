@@ -3,6 +3,7 @@ import hashlib
 import os
 import string
 from dh import modinv
+import db
 
 
 class Alice:
@@ -13,7 +14,7 @@ class Alice:
         self.r = 0
         self.g = 0
 
-    def setup(self, password, site):
+    def setup(self, password, site, change):
 
         if os.path.exists("alice.txt"):
             # read the number from the file
@@ -26,17 +27,26 @@ class Alice:
         print('G value is: ' + str(self.g))
         self.r = random.randint(2, (self.p - 1)/2)
         print('R value is: ' + str(self.r))
-        self.alpha = self.generate_alpha(password, site)
+        self.alpha = self.generate_alpha(password, site, change)
         print('Alpha is: ' + str(self.alpha))
 
-    def calculate_hash(self, password, site):
+    def calculate_hash(self, password, site, change):
         # H(pwd|domain)
-        string_concat = str(password) + str(site)
+        string_concat = ''
+        database = db.Database()
+        database.create_db()
+        timestamp = database.retrieve(site)
+        if change.lower() == 'yes':
+            database.store(site)
+            timestamp = database.retrieve(site)
+            string_concat = str(password) + str(site) + str(timestamp)
+        else:
+            string_concat = str(password) + str(site) + str(timestamp)
         h = int(hashlib.sha256(string_concat).hexdigest(), 16)
         return h
 
-    def generate_alpha(self, password, site):
-        h = self.calculate_hash(password, site)
+    def generate_alpha(self, password, site, change):
+        h = self.calculate_hash(password, site, change)
         print('H value is: ' + str(h))
         alpha = pow(self.g, h, self.p)
         return alpha

@@ -4,16 +4,16 @@ from alice import Alice
 from bob import Bob
 
 
-
 def main():
     args = parse_args()
     username = args.username
     password = args.password
     site = args.site
     category = args.category
+    change = args.change_pwd
 
     alice = Alice()
-    alice.setup(password, site)
+    alice.setup(password, site, change)
 
     a, p = alice.send_message()
     print('\na value (or alpha^r mod p): {0}'.format(a))
@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument('--password', help='master password entry')
     parser.add_argument('--site', help='domain')
     parser.add_argument('--category', help= 'enter simple or complex based on whether or not there are symbols in the password')
-   
+    parser.add_argument('--change-pwd', help='enter yes if you want to change the password. enter no otherwise')
     return parser.parse_args()
 
 
