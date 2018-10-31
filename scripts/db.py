@@ -12,7 +12,7 @@ class Database:
         # Check if domain exists in db
         sql_check = "SELECT * FROM pwds WHERE domain = '" + domain  + "'"
         cur = self.conn.cursor().execute(sql_check)
-        timestamp = int(time.time())
+        timestamp = int(time.time()) / (3600 * 24 * 30)
         if len(cur.fetchall()) >= 1:
             update_sql = "UPDATE pwds SET timestamp = "+ str(timestamp) + " WHERE domain = '" + domain + "'"
             self.conn.cursor().execute(update_sql)
