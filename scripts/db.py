@@ -24,10 +24,14 @@ class Database:
             self.conn.commit()
 
     def retrieve(self, domain):
-        sql = "SELECT * FROM pwds WHERE domain = '%s'" % domain
-        c =  self.conn.cursor().execute(sql)
-        rows = c.fetchall()
-        return rows[0][2]
+        try:
+            sql = "SELECT * FROM pwds WHERE domain = '%s'" % domain
+            c =  self.conn.cursor().execute(sql)
+            rows = c.fetchall()
+            return rows[0][2]
+        except Exception as e:
+            return ""
+
 
     def create_db(self):
         create_table = "CREATE TABLE IF NOT EXISTS pwds (id integer PRIMARY KEY, domain VARCHAR(255), timestamp integer)"
@@ -36,4 +40,3 @@ class Database:
             c.execute(create_table)
         except Exception as e:
             print(e)
-
