@@ -10,10 +10,9 @@ def main():
     password = args.password
     site = args.site
     category = args.category
-    change = args.change_pwd
 
     alice = Alice()
-    alice.setup(password, site, change)
+    alice.setup(password, site)
 
     a, p = alice.send_message()
     print('\na value (or alpha^r mod p): {0}'.format(a))
@@ -28,11 +27,11 @@ def main():
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--username', help='username for site')
-    parser.add_argument('--password', help='master password entry')
-    parser.add_argument('--site', help='domain')
-    parser.add_argument('--category', help= 'enter simple or complex based on whether or not there are symbols in the password')
-    parser.add_argument('--change-pwd', help='enter yes if you want to change the password. enter no otherwise')
+    parser.add_argument('--username', help='username for site', required=True)
+    parser.add_argument('--password', help='master password entry', required=True)
+    parser.add_argument('--site', help='domain', required=True)
+    parser.add_argument('--category', help= 'enter simple or complex based on whether or not there are symbols in the password', required=True)
+    #parser.add_argument('--change-pwd', help='enter yes if you want to change the password. enter no otherwise', required=True) no longer using this as it is based on 30 days
     return parser.parse_args()
 
 

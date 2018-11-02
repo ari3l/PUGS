@@ -4,6 +4,7 @@ import os
 import string
 from dh import modinv
 import db
+import re
 
 
 class Alice:
@@ -14,7 +15,7 @@ class Alice:
         self.r = 0
         self.g = 0
 
-    def setup(self, password, site, change):
+    def setup(self, password, site):
 
         if os.path.exists("alice.txt"):
             # read the number from the file
@@ -27,26 +28,22 @@ class Alice:
         print('G value is: ' + str(self.g))
         self.r = random.randint(2, (self.p - 1)/2)
         print('R value is: ' + str(self.r))
-        self.alpha = self.generate_alpha(password, site, change)
+        self.alpha = self.generate_alpha(password, site)
         print('Alpha is: ' + str(self.alpha))
 
-    def calculate_hash(self, password, site, change):
+    def calculate_hash(self, password, site):
         # H(pwd|domain)
         string_concat = ''
         database = db.Database()
         database.create_db()
         timestamp = database.retrieve(site)
-        if change.lower() == 'yes':
-            database.store(site)
-            timestamp = database.retrieve(site)
-            string_concat = str(password) + str(site) + str(timestamp)
-        else:
-            string_concat = str(password) + str(site) + str(timestamp)
+        database.store(site)
+        string_concat = str(password) + str(site) + str(timestamp)
         h = int(hashlib.sha256(string_concat).hexdigest(), 16)
         return h
 
-    def generate_alpha(self, password, site, change):
-        h = self.calculate_hash(password, site, change)
+    def generate_alpha(self, password, site):
+        h = self.calculate_hash(password, site)
         print('H value is: ' + str(h))
         alpha = pow(self.g, h, self.p)
         return alpha
@@ -60,32 +57,44 @@ class Alice:
         message = pow(b, inverse, self.p)
         print('\nb^ inverse of r (r^-1 mod p-1/2): {0}'.format(message))
         rwd_str = str(message)
-        rwd = hashlib.sha256(rwd_str).hexdigest()
-        print('\nRWD: {0}'.format(rwd))
 
+        print('\nRWD: {0}'.format(rwd_str))
+
+        super_simple_list = list(string.ascii_letters)
         simple_list = list(string.ascii_letters + string.digits)
         symbols_list = ['-', '_', '*', '%', '!', '@', '$', '#', '^', '&']
         complex_list = list(simple_list + symbols_list)
 
-        new_rwd = ''
-
         if category == 'simple':
-            new_rwd = self.map_algorithm(simple_list, rwd)
+            new_rwd = self.map_algorithm(simple_list, rwd_str)
+        elif category == 'super-simple':
+            new_rwd = self.map_algorithm(super_simple_list, rwd_str)
         else:
-            new_rwd = self.map_algorithm(complex_list, rwd)
+            new_rwd = self.map_algorithm(complex_list, rwd_str)
 
         print('\nNew RWD: {0}'.format(new_rwd))
 
-    def map_algorithm(self, category_list, rwd):
-        new_rwd = ''
-        n = 4
-        split_rwd = [rwd[i:i+n] for i in range(0, len(rwd), n)]
+    def generate_more_characters(self, rwd_str):
+        split_str_rwd = str(rwd_str.split())
+        hashlist = []
+        for piece in split_str_rwd:
+            hashlist.append(hashlib.sha512(piece + rwd_str).hexdigest())
+        return hashlist
 
-        for segment in split_rwd:
-            x = int(segment, 16)
-            random.seed(x)
-            index = random.randrange(0, len(category_list)-1)
-            new_rwd += category_list[index]
+    def map_algorithm(self, category_list, rwd_str):
+        hashlist = self.generate_more_characters(rwd_str)
+        hashlist_string = ''.join(hashlist)
+        chaya_cant_function = re.findall('..', hashlist_string)
+        new_rwd = ''
+        count = 1
+
+        for thing in chaya_cant_function:
+            if count <= 16:
+                x = int(thing, 16)/2
+
+                if x in range(0, len(category_list)-1):
+                    count += 1
+                    new_rwd += category_list[x]
 
         return new_rwd
 
