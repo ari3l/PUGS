@@ -16,7 +16,7 @@ class Alice:
         self.r = 0
         self.g = 0
 
-    def setup(self, password, site):
+    def setup(self, username, password, site):
 
         if os.path.exists("alice.txt"):
             # read the number from the file
@@ -29,22 +29,22 @@ class Alice:
         print('G value is: ' + str(self.g))
         self.r = random.randint(2, (self.p - 1)/2)
         print('R value is: ' + str(self.r))
-        self.alpha = self.generate_alpha(password, site)
+        self.alpha = self.generate_alpha(username, password, site)
         print('Alpha is: ' + str(self.alpha))
 
-    def calculate_hash(self, password, site):
+    def calculate_hash(self, username, password, site):
         # H(pwd|domain)
         string_concat = ''
         database = db.Database()
         database.create_db()
         timestamp = database.retrieve(site)
         database.store(site)
-        string_concat = str(password) + str(site) + str(timestamp)
+        string_concat = str(username) + str(password) + str(site) + str(timestamp)
         h = int(hashlib.sha256(string_concat).hexdigest(), 16)
         return h
 
-    def generate_alpha(self, password, site):
-        h = self.calculate_hash(password, site)
+    def generate_alpha(self, username, password, site):
+        h = self.calculate_hash(username, password, site)
         print('H value is: ' + str(h))
         alpha = pow(self.g, h, self.p)
         return alpha
