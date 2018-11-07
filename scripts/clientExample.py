@@ -4,12 +4,7 @@ from alice import Alice
 from bob import Bob
 
 
-def main():
-    args = parse_args()
-    username = args.username
-    password = args.password
-    site = args.site
-    category = args.category
+def main(username, password, site, category):
 
     alice = Alice()
     alice.setup(password, site)
@@ -36,4 +31,9 @@ def parse_args():
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_args()
+    username = args.username
+    password = args.password
+    site = args.site
+    category = args.category
+    main(username, password, site, category)
