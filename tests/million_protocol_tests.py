@@ -19,8 +19,8 @@ def main():
 
             clientExample.main(username, password, site, category)
             success_counter += 1
-        except:
-            print("SKIPPED TRY AND WENT TO EXCEPTION")
+        except Exception:
+            print(Exception.message)
             failure_counter += 1
     print("Successes: " + str(success_counter))
     print("Failures: " + str(failure_counter))
