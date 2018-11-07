@@ -19,7 +19,7 @@ def main():
 
             clientExample.main(username, password, site, category)
             success_counter += 1
-        except Exception:
+        except:
             failure_counter += 1
     print("Successes: " + str(success_counter))
     print("Failures: " + str(failure_counter))
