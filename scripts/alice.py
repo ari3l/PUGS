@@ -5,6 +5,7 @@ import string
 from dh import modinv
 import db
 import re
+import math
 
 
 class Alice:
@@ -75,28 +76,27 @@ class Alice:
         print('\nNew RWD: {0}'.format(new_rwd))
 
     def generate_more_characters(self, rwd_str):
-        split_str_rwd = str(rwd_str.split())
         hashlist = []
-        for piece in split_str_rwd:
-            hashlist.append(hashlib.sha512(piece + rwd_str).hexdigest())
+        pwd_length = 16
+        for i in range(pwd_length):
+            hashlist.append(hashlib.sha512(str(i) + rwd_str).hexdigest())
         return hashlist
 
     def map_algorithm(self, category_list, rwd_str):
-        hashlist = self.generate_more_characters(rwd_str)
-        hashlist_string = ''.join(hashlist)
-        chaya_cant_function = re.findall('..', hashlist_string)
-        new_rwd = ''
-        count = 1
+        hash_list = self.generate_more_characters(rwd_str)
+        rwd_list = []
 
-        for thing in chaya_cant_function:
-            if count <= 16:
-                x = int(thing, 16)/2
+        for h in hash_list:
+            character = re.findall('..', h)
+            for c in character:
+                divisor = 2**math.floor(math.log(float(256)/len(category_list), 2)) #CASTING TO A FLOAT BECAUSE PYTHON 2.7 IS HORRIBLE
+                x = int(c, 16)/divisor
 
                 if x in range(0, len(category_list)-1):
-                    count += 1
-                    new_rwd += category_list[x]
+                    rwd_list.append(category_list[int(x)])
+                    break
 
-        return new_rwd
+        return ''.join(rwd_list)
 
     def __repr__(self):
         return str(self.__dict__)
