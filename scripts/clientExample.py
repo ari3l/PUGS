@@ -7,7 +7,7 @@ from bob import Bob
 def main(username, password, site, category):
 
     alice = Alice()
-    alice.setup(password, site)
+    alice.setup(username, password, site)
 
     a, p = alice.send_message()
     print('\na value (or alpha^r mod p): {0}'.format(a))
