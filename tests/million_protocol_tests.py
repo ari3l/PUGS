@@ -1,5 +1,4 @@
-from scripts import clientExample
-from scripts import setup
+from scripts import setup, clientExample
 import random
 import string
 
@@ -9,8 +8,9 @@ def main():
     success_counter = 0
     setup.setup(100)
     setup.main()
-    for i in range(100000):
-        print("COUNT:" + str(i))
+    for i in range(1000000):
+        print("FAILURE: " + str(failure_counter))
+        print("COUNT: " + str(i))
         try:
             username = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             password = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
@@ -20,7 +20,7 @@ def main():
             clientExample.main(username, password, site, category)
             success_counter += 1
         except Exception:
-            print(Exception.message)
+            print(Exception)
             failure_counter += 1
     print("Successes: " + str(success_counter))
     print("Failures: " + str(failure_counter))
