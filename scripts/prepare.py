@@ -6,7 +6,7 @@ ALICE_FILE = 'alice.txt'
 BOB_FILE = 'bob.txt'
 
 
-def setup(n):
+def initiate(n):
     p, g = generate_parameters(n) #make command line argument
     k = random.randint(2, ((p - 1)/2))
 
@@ -28,7 +28,7 @@ def setup(n):
 def main():
     args = parse_args()
     n = args.n_value
-    setup(int(n))
+    initiate(int(n))
 
 
 def parse_args():

@@ -1,4 +1,4 @@
-from scripts import setup, clientExample
+from scripts import prepare, clientExample
 import random
 import string
 
@@ -6,8 +6,8 @@ import string
 def main():
     failure_counter = 0
     success_counter = 0
-    setup.setup(100)
-    setup.main()
+    prepare.initiate(100)
+    prepare.main()
     for i in range(1000000):
         print("FAILURE: " + str(failure_counter))
         print("COUNT: " + str(i))
