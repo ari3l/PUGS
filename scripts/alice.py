@@ -6,7 +6,7 @@ from dh import modinv
 import db
 import re
 import math
-
+import json
 
 class Alice:
 
@@ -34,13 +34,14 @@ class Alice:
 
     def calculate_hash(self, username, password, site):
         # H(pwd|domain)
-        string_concat = ''
         database = db.Database()
         database.create_db()
         timestamp = database.retrieve(site)
         database.store(site)
-        string_concat = str(username) + str(password) + str(site) + str(timestamp)
-        h = int(hashlib.sha256(string_concat).hexdigest(), 16)
+
+        json_arr = [username, password, site, timestamp]
+        json_array_str = json.dumps(json_arr)
+        h = int(hashlib.sha256(json_array_str).hexdigest(), 16)
         return h
 
     def generate_alpha(self, username, password, site):
