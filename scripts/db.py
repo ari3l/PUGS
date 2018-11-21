@@ -7,6 +7,7 @@ class Database:
 
     def __init__(self):
         self.conn = sqlite3.connect(DB_FILE)
+        self.create_db_if_needed()
 
     def store(self, domain):
         # Check if domain exists in db
@@ -23,6 +24,14 @@ class Database:
             self.conn.cursor().execute(insert_sql)
             self.conn.commit()
 
+    def update(self,  domain):
+        timestamp = int(time.time()) / (3600 * 24 * 30)
+        update_sql = "UPDATE pwds SET timestamp = " + str(timestamp) + " WHERE domain = '" + domain + "'"
+        self.conn.cursor().execute(update_sql)
+        self.conn.commit()
+        print "WE WAS UPDATED"
+        print "NEW PASSWORD IS: " + str(self.retrieve(domain))
+
     def retrieve(self, domain):
         try:
             sql = "SELECT * FROM pwds WHERE domain = '%s'" % domain
@@ -33,7 +42,7 @@ class Database:
             return ""
 
 
-    def create_db(self):
+    def create_db_if_needed(self):
         create_table = "CREATE TABLE IF NOT EXISTS pwds (id integer PRIMARY KEY, domain VARCHAR(255), timestamp integer)"
         try:
             c = self.conn.cursor()
