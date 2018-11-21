@@ -16,7 +16,7 @@ class Alice:
         self.r = 0
         self.g = 0
 
-    def setup(self, username, password, site):
+    def setup(self, username, password, site, update):
 
         if os.path.exists("alice.txt"):
             # read the number from the file
@@ -29,23 +29,26 @@ class Alice:
         print('G value is: ' + str(self.g))
         self.r = random.randint(2, (self.p - 1)/2)
         print('R value is: ' + str(self.r))
-        self.alpha = self.generate_alpha(username, password, site)
+        self.alpha = self.generate_alpha(username, password, site, update)
         print('Alpha is: ' + str(self.alpha))
 
-    def calculate_hash(self, username, password, site):
+    def calculate_hash(self, username, password, site, update):
         # H(pwd|domain)
+        string_concat = ''
         database = db.Database()
-        database.create_db()
-        timestamp = database.retrieve(site)
-        database.store(site)
-
+        if update == 'yes':
+            database.update(site)
+            timestamp = database.retrieve(site)
+        else:
+            timestamp = database.retrieve(site)
+            database.store(site)
         json_arr = [username, password, site, timestamp]
-        json_array_str = json.dumps(json_arr)
+        json_array_str = json.dumps(json_arr) #str(username) + str(password) + str(site) + str(timestamp)
         h = int(hashlib.sha256(json_array_str).hexdigest(), 16)
         return h
 
-    def generate_alpha(self, username, password, site):
-        h = self.calculate_hash(username, password, site)
+    def generate_alpha(self, username, password, site, update):
+        h = self.calculate_hash(username, password, site, update)
         print('H value is: ' + str(h))
         alpha = pow(self.g, h, self.p)
         return alpha
