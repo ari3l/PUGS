@@ -1,27 +1,34 @@
 import socket
 import pickle
 from bob import Bob
-
-HOST = '127.0.0.1'
-PORT = 50007
+import ssl
 
 
 def main():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((HOST, PORT))
-    s.listen(1)
+    listen_addr = '127.0.0.1'
+    listen_port = 8082
+    server_cert = 'server.crt'
+    server_key = 'server.key'
+    client_certs = 'client.crt'
 
-    conn, addr = s.accept()
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.verify_mode = ssl.CERT_REQUIRED
+    context.load_cert_chain(certfile=server_cert, keyfile=server_key)
+    context.load_verify_locations(cafile=client_certs)
 
-    print 'RECEIVED CONNECTION ', addr
+    bindsocket = socket.socket()
+    bindsocket.bind((listen_addr, listen_port))
+    bindsocket.listen(5)
 
     while True:
+        print("Waiting for client")
+        newsocket, fromaddr = bindsocket.accept()
+        print("Client connected: {}:{}".format(fromaddr[0], fromaddr[1]))
+        conn = context.wrap_socket(newsocket, server_side=True)
+        print("SSL established. Peer: {}".format(conn.getpeercert()))
+
         data = conn.recv(4096)
-        if not data:
-            break
-
         alice_data = pickle.loads(data)  # tuple containing alpha and p from alice
-
         alpha = alice_data[0]
         p = alice_data[1]
 
@@ -31,7 +38,9 @@ def main():
 
         serialized_data = pickle.dumps(b)
         conn.sendall(serialized_data)
-    s.close()
+
+        conn.shutdown(socket.SHUT_RDWR)
+        conn.close()
 
 
 if __name__ == '__main__':
