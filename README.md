@@ -8,7 +8,7 @@
 1. Generate server cert:
     * ``openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
 ``
-***Make sure to enter 'example.com' for the Common Name.***
+      > Make sure to enter 'example.com' for the Common Name.
 
 2. Generate client cert:
     * ``openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout client.key -out client.crt
