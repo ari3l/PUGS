@@ -5,6 +5,7 @@ import string
 from dh import modinv
 import db
 import math
+from Crypto.Util import number
 import json
 
 
@@ -57,7 +58,7 @@ class Alice:
         return pow(self.alpha, self.r, self.p), self.p
 
     def compute_rwd(self, b, category):
-        inverse = modinv(self.r, (self.p-1)/2)
+        inverse = number.inverse(self.r, (self.p-1)/2)
 
         message = pow(b, inverse, self.p)
         print('\nb^ inverse of r (r^-1 mod p-1/2): {0}'.format(message))

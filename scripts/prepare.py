@@ -1,13 +1,17 @@
 from dh import generate_parameters
 import random
 import argparse
-
+from Crypto.Util import number
 ALICE_FILE = 'alice.txt'
 BOB_FILE = 'bob.txt'
 
 
 def initiate(n):
-    p, g = generate_parameters(n) #make command line argument
+    p = number.getPrime(n)
+    g = random.randint(0, 2**n)**2 % p
+    print("Fancy crypto package p: " + str(p))
+    print("Fancy crypto package g:" + str(g))
+
     k = random.randint(2, ((p - 1)/2))
 
     # Alice stuff
@@ -34,10 +38,8 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-value', default=100, help='n value for generating p and g parameters')
-
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     main()
-

@@ -27,7 +27,6 @@ def parse_args():
     parser.add_argument('--site', help='domain', required=True)
     parser.add_argument('--update', help= 'update password', required=False)
     parser.add_argument('--category', help= 'enter simple or complex based on whether or not there are symbols in the password', required=True)
-    #parser.add_argument('--change-pwd', help='enter yes if you want to change the password. enter no otherwise', required=True) no longer using this as it is based on 30 days
     return parser.parse_args()
 
 
